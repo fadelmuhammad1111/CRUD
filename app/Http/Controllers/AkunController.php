@@ -2,20 +2,44 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Akun;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 
 class AkunController extends Controller
 {   
-    /**
-     * Display a listing of the resource.
-     */
+    
+    public function login(){
+
+        return view('login');
+    }
+
+    public function loginAuth(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email:dns',
+            'password' => 'required',
+        ]);
+
+        $user = $request->only(['email', 'password']);
+        if(Auth::attempt($user)) {
+            return redirect()->route('home.page');
+        }else {
+            return redirect()->back()->with('failed', 'Proses login gagal, silahkan coba kembali dengan data yang benar!');
+        }
+    }
+
+    public function logout(){
+        Auth::logout();
+        return redirect()->route('login')->with('logout', 'Anda telah logout!');
+    }
+
     public function index()
     {
-        $users = Akun::all();
+        $users = User::all();
         return view("kelola.index",compact('users'));
     }
 
@@ -33,15 +57,15 @@ class AkunController extends Controller
     public function store(Request $request)
     {
         $validatedData= $request->validate([
-            'nama' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users',
             'role' => 'required|string|in:admin,user',
         ]);
 
         $generatedPassword= Str::random(12);
 
-        Akun::create([
-            'nama' => $validatedData['nama'],
+        User::create([
+            'name' => $validatedData['name'],
             'email' => $validatedData['email'],
             'password' => bcrypt($generatedPassword),
             'role' => $validatedData['role'],
@@ -64,7 +88,7 @@ class AkunController extends Controller
     public function edit($id)
     {
         //
-        $users = Akun::find($id);
+        $users = User::find($id);
         return view('kelola.edit', compact('users'));
     }
 
@@ -75,13 +99,13 @@ class AkunController extends Controller
     {
         //
         $request->validate([
-            'nama' => 'required|min:3',
+            'name' => 'required|min:3',
             'email' => 'required',
             'role' => 'required',
         ]);
 
-        Akun::where('id', $id)->update([
-            'nama' => $request->nama,
+        User::where('id', $id)->update([
+            'name' => $request->name,
             'email' => $request->email,
             'role' => $request->role,
         ]);
@@ -95,7 +119,7 @@ class AkunController extends Controller
     public function destroy($id)
     {
         //
-        Akun::where('id', $id)->delete();
+        User::where('id', $id)->delete();
 
         return redirect()->back()->with('deleted', 'Berhasil menghapus data');
     }

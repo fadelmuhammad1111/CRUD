@@ -45,7 +45,7 @@ class MedicineController extends Controller
             'stock' => $request->stock,
         ]);
         // atau jika seluruh data input akan dimasukkan langsung ke db bisa dengan perintah Medicine::create($request->all());
-        return redirect()->back()->with('success', 'Berhasil menambahkan data obat!');
+        return redirect()->back()->with('success', 'Berhasil menambahkan data!');
     }
 
     /**
@@ -107,7 +107,7 @@ class MedicineController extends Controller
         $medicine = Medicine::find($id);
 
         if (!$medicine) {
-            return response()->json(['message' => 'Medicine not found'], 404); // Handle the case if medicine not found
+            return response()->json(['message' => 'not found'], 404); // Handle the case if medicine not found
         }
 
         return response()->json($medicine); // Return the medicine data as JSON
@@ -122,7 +122,7 @@ class MedicineController extends Controller
         $medicine = Medicine::find($id);
 
         if (!$medicine) {
-            return response()->json(['message' => 'Medicine not found'], 404);
+            return response()->json(['message' => 'not found'], 404);
         }
         if ($request->stock <= $medicine->stock) {
             return response()->json(["message" => "Stock yang diinput tidak boleh kurang dari stock sebelumnya"], 400); // Return error if stock is less than or equal to the current stock

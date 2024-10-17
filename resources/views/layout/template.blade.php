@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{csrf_token()}}">
-        <title>Apoteker App</title>
+        <title>Minimarket App</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
         @stack('style')
     </head>
@@ -12,31 +12,44 @@
 
         <nav class="navbar navbar-expand-lg bg-body-tertiary">
             <div class="container">
-              <a class="navbar-brand" href="#">Apotek App</a>
+              <a class="navbar-brand" href="#">Minimarket App</a>
               <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
               </button>
               <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                @if (Auth::check())
                 <ul class="navbar-nav">
                   <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href="/">Dashboard</a>
                   </li>
+                  @if (Auth::user()->role == "admin")
                   <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                      Obat
+                      Barang
                     </a>
                     <ul class="dropdown-menu">
-                      <li><a class="dropdown-item" href="{{route('medicine.home')}}">Data Obat</a></li>
+                      <li><a class="dropdown-item" href="{{route('medicine.home')}}">Data Barang</a></li>
                       <li><a class="dropdown-item" href="{{route('medicine.create')}}">Tambah</a></li>
                       <li><a class="dropdown-item" href="{{route('medicine.stock')}}">Stok</a></li>
                     </ul>
                   </li>
+                  <a class="nav-link active" aria-current="page" href="/kelola">Kelola Akun</a>
+                </li>
+                @endif
+                
+                <li class="nav-item">
+                  <a class="nav-link active" aria-current="page" href="#">Pembelian</a>
                   <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#">Pembelian</a>
-                  </li>
+                </li>
                   <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="/kelola">Kelola Akun</a>
-                  </li>
+                    <form action="{{ route('logout') }}" method="POST" style="display: inline;">
+                        @csrf
+                        <button type="submit" class="nav-link" style="border: none; background: none; cursor: pointer;">Logout</button>
+                    </form>
+                </li>
+                
+                
+                  @endif
                 </ul>
               </div>
             </div>

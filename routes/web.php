@@ -17,9 +17,9 @@ use App\Http\Controllers\AkunController;
 |
 */
 
-Route::get('/', function () {
-    return view('home');
-});
+// Route::get('/', function () {
+//     return view('home');
+// });
 
 Route::get('/kelola', function () {
     return view('kelola.index');
@@ -32,6 +32,34 @@ Route::get('/kelola', function () {
 // 2.post -> menambahkan data baru ke db
 // 3.patch/put -> mengubah data di db
 // 4. delate -> menghapus data di db
+
+// Route::middleware('IsLogin')->group(function() {
+//     Route::get('/home', function () {
+//         return view('home');
+//     })->name('home.page');
+// });
+Route::middleware(['isGuest'])->group(function(){
+    // Route::get('/', [UserController::class, 'login'])->name('login');
+    // Route::post('/login', [UserController::class, 'loginAuth'])->name('login.auth');
+    Route::get('/', [AkunController::class, 'login'])->name('login');
+    Route::post('/login', [AkunController::class, 'loginAuth'])->name('login.auth');
+});
+
+// Route::get('/', [AkunController::class, 'login'])->name('login');
+// Route::post('/login', [AkunController::class, 'loginAuth'])->name('login.auth');
+
+
+Route::middleware(['IsLogin'])->group(function() {
+Route::post('/logout', [AkunController::class, 'logout'])->name('logout');
+Route::get('/home', function () { 
+    return view('home');
+        })->name('home.page');
+
+
+Route::middleware(['isAdmin'])->group(function() {
+    Route::prefix('/users')->name('users.')->group(function(){
+    }); 
+
 Route::prefix('/medicine')->name('medicine.')->group(function() {
     Route::get('create', [MedicineController::class, 'create'])->name('create');
     Route::post('store', [MedicineController::class, 'store'])->name('store');
@@ -50,4 +78,7 @@ Route::prefix('/kelola')->name('kelola.')->group(function(){
     route::get('{id}', [AkunController::class, 'edit'])->name ('edit');
     route::patch('/{id}', [AkunController::class, 'update'])->name ('update');
     route::delete('/{id}', [AkunController::class, 'destroy'])->name ('delete');
+});
+
+});
 });
